@@ -2,22 +2,20 @@ import React, { useEffect } from 'react'
 import S from 'styled-components';
 
 const Modal = ({closeModal, children}) => {
- 
- const handleClickOutside = (event) => {
-    const target = event.target;
-    if (target.id === 'backdrop') {
-        closeModal()
-    }
-  };
+    const backdropRef = useRef(null);
 
+    const handleClickOutside = useCallback((event) => {
+        if (backdropRef.current && !backdropRef.current.contains(event.target)) {
+            closeModal();
+        }
+    }, []);
 
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
-  }, []);
-
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside, true);
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+        };
+    }, [handleClickOutside]);
   return (
     <Backdrop id='backdrop'>
        <Content>
